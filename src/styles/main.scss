@@ -1,0 +1,73 @@
+body{
+  h1, h2, h3, h4, h5{
+    Font-Family: 'Raleway', Sans-Serif;
+    font-weight: 100;
+  }
+
+  Font-Family: 'Open Sans', Sans-Serif;
+  Font-Size: 15px;
+
+  input{
+    &[type="text"]{
+      padding: 10px;
+      -webkit-border-radius: 5px;
+      -moz-border-radius: 5px;
+      border-radius: 5px;
+      box-shadow: none;
+      font-size: 15px;
+      border: 1px solid #000;
+    }
+  }
+  .button {
+    display: inline-block;
+    border: 1px solid #000;
+    padding: 10px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    transition: 0.5s;
+    &:hover{
+      background-color: #000000;
+      color: #FFFFFF;
+      cursor: pointer;
+    }
+
+  }
+}
+
+@-ms-keyframes spin {
+  from {
+    -ms-transform: rotate(0deg);
+  }
+  to {
+    -ms-transform: rotate(360deg);
+  }
+}
+@-moz-keyframes spin {
+  from {
+    -moz-transform: rotate(0deg);
+  }
+  to {
+    -moz-transform: rotate(360deg);
+  }
+}
+@-webkit-keyframes spin {
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+  to {
+    -webkit-transform: rotate(360deg);
+  }
+}
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@import "partials/login";
+@import "partials/random-album";
+@import "partials/listen";
