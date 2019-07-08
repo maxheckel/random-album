@@ -7,7 +7,7 @@
                 <h3>{{master.artists[0].name}}</h3>
             </div>
             <div class="tracks">
-                <div class="track" v-for="(track, index) in master.tracklist" v-bind:key="track.position" v-bind:class="{'track': true, 'highlighted': isCurrentTrack(index)}">
+                <div v-for="(track, index) in master.tracklist" v-bind:key="track.position" v-bind:class="{'track': true, 'highlighted': isCurrentTrack(index)}">
                     <div class="title">
                         {{track.position}}: {{track.title}}
                     </div>
@@ -111,8 +111,31 @@
             newAlbum(){
                 this.$router.push('/random-album')
             },
-            isCurrentTrack(){
-                return false
+            isCurrentTrack(index){
+                var minSeconds = 0;
+                var maxSeconds = 0;
+                for(var i = 0; i < this.master.tracklist.length; i++){
+                    if(this.master.tracklist[i].duration.split(':')[1] == undefined){
+                        continue
+                    }
+                    if(i === index){
+                        maxSeconds += parseInt(this.master.tracklist[i].duration.split(':')[0])*60
+                        maxSeconds += parseInt(this.master.tracklist[i].duration.split(':')[1])
+                        break;
+                    }
+                    minSeconds += parseInt(this.master.tracklist[i].duration.split(':')[0])*60
+                    minSeconds += parseInt(this.master.tracklist[i].duration.split(':')[1])
+                    maxSeconds += parseInt(this.master.tracklist[i].duration.split(':')[0])*60
+                    maxSeconds += parseInt(this.master.tracklist[i].duration.split(':')[1])
+                }
+                if(maxSeconds <= 0){
+                    return false
+                }
+                minSeconds = minSeconds * 1000;
+                maxSeconds = maxSeconds * 1000;
+
+                let elapsed = this.totalSeconds - this.secondsCountdown;
+                return elapsed >= minSeconds && elapsed <= maxSeconds
             },
             startProgress(){
                 this.playing = true
