@@ -2,7 +2,7 @@ import axios from 'axios'
 
 export default {
     async getMaster(masterId){
-        return await axios.get('https://api.discogs.com/masters/'+masterId+'?token=RUWgPYGkypLztPqcshEmvlmtDXMJOsGUhEZEyKHY')
+        return await axios.get('https://api.discogs.com/releases/'+masterId+'?token=RUWgPYGkypLztPqcshEmvlmtDXMJOsGUhEZEyKHY')
     },
 
     async getCollection(username, accessKey, accessSecret, page){

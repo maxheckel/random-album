@@ -82,7 +82,7 @@
             },
             async listen(){
                 this.isSpinning = true;
-                const masterData = await api.getMaster(this.selectedAlbum.basic_information.master_id)
+                const masterData = await api.getMaster(this.selectedAlbum.basic_information.id)
                 this.$store.commit('discogs/addMaster', {master: masterData.data})
                 this.$router.push('/listen/'+masterData.data.id)
             }
