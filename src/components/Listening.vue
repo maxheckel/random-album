@@ -252,7 +252,7 @@
             }
             let primaryLight = lightOrDark(this.cssProps['--gradient-primary']);
             let secondaryLight = lightOrDark(this.cssProps['--gradient-secondary']);
-            if (primaryLight === 'dark' && secondaryLight === 'dark'){
+            if (primaryLight === 'dark' || secondaryLight === 'dark'){
                 this.shouldBeLight = true
             }
         }
