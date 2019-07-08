@@ -16,23 +16,7 @@
 
 <script>
     import api from '../apis/discogs'
-    function toDataURL(url, callback) {
-        var xhr = new XMLHttpRequest();
-        xhr.onload = function() {
-            var reader = new FileReader();
-            reader.onloadend = function() {
-                callback(reader.result);
-            }
-            reader.readAsDataURL(xhr.response);
-        };
-        xhr.open('GET', url);
-        xhr.responseType = 'blob';
-        xhr.send();
-    }
 
-    toDataURL('https://img.discogs.com/Px8KGsMXz7cP23gyfz6pxaxG-70=/fit-in/303x303/filters:strip_icc():format(jpeg):mode_rgb():quality(90)/discogs-images/R-3909105-1348892449-6454.jpeg.jpg', function(dataUrl) {
-        console.log('RESULT:', dataUrl)
-    })
     export default {
         name: "random-album",
         data: function(){

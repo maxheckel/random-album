@@ -5,12 +5,12 @@ import Listening from './components/Listening'
 import RandomAlbum from './components/RandomAlbum'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import store from './store'
-import {faCompactDisc as lightCompactDisk} from '@fortawesome/pro-light-svg-icons'
+import {faCompactDisc as lightCompactDisk, faPlayCircle, faPauseCircle, faRedoAlt, faUndoAlt} from '@fortawesome/pro-light-svg-icons'
 import {faCompactDisc} from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import VueRouter from 'vue-router'
 
-library.add(lightCompactDisk, faCompactDisc)
+library.add(lightCompactDisk, faCompactDisc, faPlayCircle, faPauseCircle, faRedoAlt, faUndoAlt)
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 
 Vue.config.productionTip = false
