@@ -44,6 +44,7 @@
     }
   }
 
+
   .sticky-footer {
     position: fixed;
     bottom: 0;
@@ -68,7 +69,9 @@
       padding-left: 10px;
       box-sizing: border-box;
       text-align: right;
-      cursor: pointer;
+      svg{
+        cursor: pointer;
+      }
       .smaller{
         font-size: 20px;
         margin-top: -8px;
@@ -112,4 +115,32 @@
       }
     }
   }
+
+
+  &.light{
+    color: #ffffff;
+    .track{
+      border-bottom: 1px solid #ffffff
+
+    }
+    .sticky-footer{
+      background-color: black;
+      .button{
+        border: 1px solid #ffffff;
+        &:hover{
+          background-color: #ffffff;
+          color: #000000;
+        }
+      }
+      .progress-bar{
+        .bar{
+          background-color: #ffffff;
+        }
+        .position{
+          background-color: #ffffff;
+        }
+      }
+    }
+  }
+
 }

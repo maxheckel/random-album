@@ -1,5 +1,5 @@
 <template>
-    <div class="listen" v-if="master.id !== undefined" v-bind:style="cssProps">
+    <div v-bind:class="{listen: true, light: shouldBeLight}" v-if="master.id !== undefined" v-bind:style="cssProps">
         <div class="details">
             <div class="image">
                 <img v-bind:src="master.images[0].uri">
@@ -39,6 +39,51 @@
 </template>
 
 <script>
+    import {mapState} from 'vuex'
+    function lightOrDark(color) {
+
+        // Variables for red, green, blue values
+        var r, g, b, hsp;
+
+        // Check the format of the color, HEX or RGB?
+        if (color.match(/^rgb/)) {
+
+            // If HEX --> store the red, green, blue values in separate variables
+            color = color.match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*(\d+(?:\.\d+)?))?\)$/);
+
+            r = color[1];
+            g = color[2];
+            b = color[3];
+        }
+        else {
+
+            // If RGB --> Convert it to HEX: http://gist.github.com/983661
+            color = +("0x" + color.slice(1).replace(
+                color.length < 5 && /./g, '$&$&'));
+
+            r = color >> 16;
+            g = color >> 8 & 255;
+            b = color & 255;
+        }
+
+        // HSP (Highly Sensitive Poo) equation from http://alienryderflex.com/hsp.html
+        hsp = Math.sqrt(
+            0.299 * (r * r) +
+            0.587 * (g * g) +
+            0.114 * (b * b)
+        );
+
+        // Using the HSP value, determine whether the color is light or dark
+        if (hsp>127.5) {
+
+            return 'light';
+        }
+        else {
+
+            return 'dark';
+        }
+    }
+
     Number.prototype.pad = function(size) {
         var s = String(this);
         while (s.length < (size || 2)) {s = "0" + s;}
@@ -48,6 +93,7 @@
         name: "listening",
         data(){
             return {
+                shouldBeLight: false,
                 gradient: {
                     primary: '#DBD5A4',
                     secondary: '#649173'
@@ -152,13 +198,7 @@
                 clearInterval(this.progress)
             }
         },
-        computed: {
-            cssProps: function(){
-                return {
-                    '--gradient-primary': this.gradient.primary,
-                    '--gradient-secondary': this.gradient.secondary,
-                }
-            },
+        computed: Object.assign({
             progressMargin(){
                 return 100 - ((this.secondsCountdown/this.totalSeconds) * 100) + "%"
             },
@@ -172,7 +212,14 @@
                 var remainingSeconds = remaining % 60
                 return remainingMinutes.pad(2) +':'+remainingSeconds.pad(2) + ' / ' + minutes.pad(2) + ':' + seconds.pad(2);
             }
-        },
+        },   mapState({
+            cssProps: state => {
+                return {
+                    '--gradient-primary': state.randomvinyl.colors[0],
+                    '--gradient-secondary': state.randomvinyl.colors[1],
+                }
+            }
+        })),
         mounted(){
             if (this.$store.state.discogs.collection.length === 0){
                 this.$router.push('/')
@@ -202,6 +249,11 @@
 
             if (totalSeconds > 0){
                 this.startProgress()
+            }
+            let primaryLight = lightOrDark(this.cssProps['--gradient-primary']);
+            let secondaryLight = lightOrDark(this.cssProps['--gradient-secondary']);
+            if (primaryLight === 'dark' && secondaryLight === 'dark'){
+                this.shouldBeLight = true
             }
         }
     }

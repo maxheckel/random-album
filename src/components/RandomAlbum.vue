@@ -1,7 +1,7 @@
 <template>
     <div class="random-album" v-if="selectedAlbum.basic_information !== undefined" v-bind:style="cssProps">
         <img v-bind:src="selectedAlbum.basic_information.cover_image">
-        <font-awesome-icon v-bind:class="{'spinner': true, 'visible': isSpinning}" :icon="['fal', 'compact-disc']" />
+        <font-awesome-icon v-bind:class="{'spinner': true, 'visible': isSpinning}" :icon="['fal', 'compact-disc']"/>
         <h1>{{selectedAlbum.basic_information.title}}</h1>
         <h3> {{selectedAlbum.basic_information.artists[0].name}}</h3>
         <br>
@@ -16,10 +16,12 @@
 
 <script>
     import api from '../apis/discogs'
+    import vinylAPI from '../apis/randomvinyl'
+    import {mapState} from 'vuex'
 
     export default {
         name: "random-album",
-        data: function(){
+        data: function () {
             return {
                 selectedAlbum: {},
                 isSpinning: false,
@@ -67,34 +69,38 @@
                 }
             }
         },
-        computed: {
-            cssProps: function(){
-                return {
-                    '--gradient-primary': this.gradient.primary,
-                    '--gradient-secondary': this.gradient.secondary,
+        computed:
+            mapState({
+                cssProps: state => {
+                    return {
+                        '--gradient-primary': state.randomvinyl.colors[0],
+                        '--gradient-secondary': state.randomvinyl.colors[1],
+                    }
                 }
-            }
-        },
+            }),
         methods: {
-            tryAgain(){
-                this.gradient = this.gradients[Math.floor(Math.random()*this.gradients.length)]
-                this.selectedAlbum = this.$store.state.discogs.collection[Math.floor(Math.random()*this.$store.state.discogs.collection.length)]
+            async tryAgain() {
+                this.gradient = this.gradients[Math.floor(Math.random() * this.gradients.length)]
+                this.selectedAlbum = this.$store.state.discogs.collection[Math.floor(Math.random() * this.$store.state.discogs.collection.length)]
+                var colors = await vinylAPI.getColorsForImage(this.selectedAlbum.basic_information.cover_image)
+                this.$store.commit('randomvinyl/setCurrentColors', colors.data)
             },
-            async listen(){
+            async listen() {
                 this.isSpinning = true;
                 const masterData = await api.getMaster(this.selectedAlbum.basic_information.id)
                 this.$store.commit('discogs/addMaster', {master: masterData.data})
-                this.$router.push('/listen/'+masterData.data.id)
+                this.$router.push('/listen/' + masterData.data.id)
             }
         },
-        mounted(){
-            if (this.$store.state.discogs.collection.length === 0){
+        async mounted() {
+            if (this.$store.state.discogs.collection.length === 0) {
                 this.$router.push('/')
                 return;
             }
-            this.gradient = this.gradients[Math.floor(Math.random()*this.gradients.length)]
-            this.selectedAlbum = this.$store.state.discogs.collection[Math.floor(Math.random()*this.$store.state.discogs.collection.length)]
-
+            this.gradient = this.gradients[Math.floor(Math.random() * this.gradients.length)]
+            this.selectedAlbum = this.$store.state.discogs.collection[Math.floor(Math.random() * this.$store.state.discogs.collection.length)]
+            var colors = await vinylAPI.getColorsForImage(this.selectedAlbum.basic_information.cover_image)
+            this.$store.commit('randomvinyl/setCurrentColors', colors.data)
         }
     }
 </script>
