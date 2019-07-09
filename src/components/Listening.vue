@@ -1,5 +1,11 @@
 <template>
     <div v-bind:class="{listen: true, light: shouldBeLight}" v-if="master.id !== undefined" v-bind:style="cssProps">
+        <div class="flip" v-if="flipCountdown > 0" @click="stopFlipping">
+            <div class="flipping-vinyl">
+                <font-awesome-icon icon="compact-disc"/>
+            </div>
+            {{flipCountdown}}
+        </div>
         <div class="details">
             <div class="image">
                 <img v-bind:src="master.images[0].uri">
@@ -7,14 +13,14 @@
                 <h3>{{master.artists[0].name}}</h3>
             </div>
             <div class="tracks">
-                <div v-for="(track, index) in master.tracklist" v-bind:key="track.position" v-bind:class="{'track': true, 'highlighted': isCurrentTrack(index)}">
-                    <div class="title">
-                        {{track.position}}: {{track.title}}
-                    </div>
-                    <div class="duration">
-                        {{track.duration}}
-                    </div>
-                </div>
+                <album-track
+                        v-bind:key="track.position"
+                        v-for="(track, index) in master.tracklist"
+                        v-bind:data="track"
+                        v-bind:index="index"
+                        v-bind:is-current="isCurrentTrack(index)"
+                        @trackClicked="setCurrentTime(index)"
+                />
             </div>
         </div>
         <footer class="sticky-footer">
@@ -40,57 +46,20 @@
 
 <script>
     import {mapState} from 'vuex'
-    function lightOrDark(color) {
-
-        // Variables for red, green, blue values
-        var r, g, b, hsp;
-
-        // Check the format of the color, HEX or RGB?
-        if (color.match(/^rgb/)) {
-
-            // If HEX --> store the red, green, blue values in separate variables
-            color = color.match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*(\d+(?:\.\d+)?))?\)$/);
-
-            r = color[1];
-            g = color[2];
-            b = color[3];
-        }
-        else {
-
-            // If RGB --> Convert it to HEX: http://gist.github.com/983661
-            color = +("0x" + color.slice(1).replace(
-                color.length < 5 && /./g, '$&$&'));
-
-            r = color >> 16;
-            g = color >> 8 & 255;
-            b = color & 255;
-        }
-
-        // HSP (Highly Sensitive Poo) equation from http://alienryderflex.com/hsp.html
-        hsp = Math.sqrt(
-            0.299 * (r * r) +
-            0.587 * (g * g) +
-            0.114 * (b * b)
-        );
-
-        // Using the HSP value, determine whether the color is light or dark
-        if (hsp>127.5) {
-
-            return 'light';
-        }
-        else {
-
-            return 'dark';
-        }
-    }
+    import lightOrDark from '../utils/lightOrDark'
+    import AlbumTrack from './AlbumTrack'
 
     Number.prototype.pad = function(size) {
         var s = String(this);
         while (s.length < (size || 2)) {s = "0" + s;}
         return s;
     }
+
     export default {
         name: "listening",
+        components:{
+            AlbumTrack
+        },
         data(){
             return {
                 shouldBeLight: false,
@@ -99,52 +68,54 @@
                     secondary: '#649173'
                 },
                 playing: true,
-
-                gradients: [
-                    {
-                        primary: '#B993D6',
-                        secondary: '#8CA6DB'
-                    },
-                    {
-                        primary: '#870000',
-                        secondary: '#190A05'
-                    },
-                    {
-                        primary: '#00d2ff',
-                        secondary: '#3a7bd5'
-                    },
-                    {
-                        primary: '#D3959B',
-                        secondary: '#BFE6BA'
-                    },
-                    {
-                        primary: '#DAD299',
-                        secondary: '#B0DAB9'
-                    },
-                    {
-                        primary: '#f2709c',
-                        secondary: '#ff9472'
-                    },
-                    {
-                        primary: '#E6DADA',
-                        secondary: '#274046'
-                    },
-                    {
-                        primary: '#DBD5A4',
-                        secondary: '#649173'
-                    },
-                    {
-                        primary: '#5D4157',
-                        secondary: '#A8CABA'
-                    }
-                ],
                 master: {},
                 progress: null,
                 secondsCountdown: 0,
-                totalSeconds: 0
+                totalSeconds: 0,
+                currentTrack: 0,
+                flipCountdown: 0,
+                flipProgress: null
+
+            }
+        },
+        watch: {
+            currentTrack: function(newTrack, oldTrack){
+                let differentPrefix = this.master.tracklist[newTrack].position[0].toLowerCase() !== this.master.tracklist[oldTrack].position[0].toLowerCase();
+
+                if(differentPrefix && isNaN(this.master.tracklist[newTrack].position[0]) && isNaN(this.master.tracklist[oldTrack].position[0])){
+                    this.stopProgress()
+                    document.body.scrollTop = document.documentElement.scrollTop = 0;
+                    this.flipCountdown = 30;
+                    this.flipProgress = setInterval(() => {
+                        this.flipCountdown -= 1
+                        if(this.flipCountdown === 0){
+                            this.startProgress()
+                            clearInterval(this.flipProgress)
+                        }
+                    }, 1000)
+                }
             }
         },
         methods:{
+            stopFlipping(){
+                this.flipCountdown = 0;
+                clearInterval(this.flipProgress)
+                this.startProgress()
+            },
+            setCurrentTime(index){
+                var setSeconds = 0;
+                for(var i = 0; i < this.master.tracklist.length; i++){
+                    if(this.master.tracklist[i].duration.split(':')[1] == undefined){
+                        continue
+                    }
+                    if(i === index){
+                        break;
+                    }
+                    setSeconds += parseInt(this.master.tracklist[i].duration.split(':')[0])*60
+                    setSeconds += parseInt(this.master.tracklist[i].duration.split(':')[1])
+                }
+                this.secondsCountdown = this.totalSeconds - (setSeconds*1000);
+            },
             reverse(){
                 this.secondsCountdown+=30000;
                 if(this.secondsCountdown > this.totalSeconds){
@@ -181,7 +152,11 @@
                 maxSeconds = maxSeconds * 1000;
 
                 let elapsed = this.totalSeconds - this.secondsCountdown;
-                return elapsed >= minSeconds && elapsed <= maxSeconds
+                const isCurrent = (elapsed >= minSeconds && elapsed < maxSeconds)
+                if(isCurrent){
+                    this.currentTrack = index
+                }
+                return isCurrent
             },
             startProgress(){
                 this.playing = true
