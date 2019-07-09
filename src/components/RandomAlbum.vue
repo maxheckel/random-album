@@ -111,7 +111,8 @@
                     primary: '#DBD5A4',
                     secondary: '#649173'
                 },
-                shouldBeLight: false
+                shouldBeLight: false,
+                tryInterval: null
             }
         },
         computed:
@@ -132,7 +133,6 @@
 
                 let primaryLight = lightOrDark(this.cssProps['--gradient-primary']);
                 let secondaryLight = lightOrDark(this.cssProps['--gradient-secondary']);
-                console.log(primaryLight, secondaryLight)
                 if (primaryLight === 'dark' || secondaryLight === 'dark'){
                     this.shouldBeLight = true
                 } else{
@@ -143,6 +143,7 @@
                 this.isSpinning = true;
                 const masterData = await api.getMaster(this.selectedAlbum.basic_information.id)
                 this.$store.commit('discogs/addMaster', {master: masterData.data})
+                clearInterval(this.tryInterval)
                 this.$router.push('/listen/' + masterData.data.id)
             }
         },
@@ -151,16 +152,8 @@
                 this.$router.push('/')
                 return;
             }
-            this.gradient = this.gradients[Math.floor(Math.random() * this.gradients.length)]
-            this.selectedAlbum = this.$store.state.discogs.collection[Math.floor(Math.random() * this.$store.state.discogs.collection.length)]
-            var colors = await vinylAPI.getColorsForImage(this.selectedAlbum.basic_information.cover_image)
-            this.$store.commit('randomvinyl/setCurrentColors', colors.data)
-
-            let primaryLight = lightOrDark(this.cssProps['--gradient-primary']);
-            let secondaryLight = lightOrDark(this.cssProps['--gradient-secondary']);
-            if (primaryLight === 'dark' || secondaryLight === 'dark'){
-                this.shouldBeLight = true
-            }
+            this.tryAgain()
+            this.tryInterval = setInterval(this.tryAgain, 300000)
         }
     }
 </script>
