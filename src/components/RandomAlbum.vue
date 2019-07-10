@@ -73,7 +73,7 @@
                 return;
             }
             this.tryAgain()
-            this.tryInterval = setInterval(this.tryAgain, 300000)
+            this.tryInterval = setInterval(this.tryAgain, 1800000)
         }
     }
 </script>
