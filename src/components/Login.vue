@@ -51,17 +51,18 @@
                     }
                     return
                 }
-
-                while(collection.data.releases !== undefined && collection.data.releases.length > 0 && collection.data.releases.length % 500 === 0){
+                var releases = collection.data.releases;
+                while(collection.data.releases !== undefined && collection.data.pagination.page < collection.data.pagination.pages){
                     page = page + 1;
                     try{
                         collection = await api.getCollection(this.$store.state.discogs.discogsUsername, this.$store.state.discogs.discogsOauthToken, this.$store.state.discogs.discogsOauthSecret, page)
                     } catch {
                         break;
                     }
-                    this.$store.commit('discogs/addToDiscogsCollection', {additions: collection.data.releases})
+                    releases.push(...collection.data.releases)
                 }
-                this.$store.commit('discogs/setDiscogsCollection', {collection: collection.data.releases})
+
+                this.$store.commit('discogs/setDiscogsCollection', {collection: releases})
                 this.$router.push('/random-album')
             }
         },
