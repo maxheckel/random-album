@@ -1,5 +1,6 @@
 <template>
     <div v-bind:class="{listen: true, light: shouldBeLight}" v-if="master.id !== undefined" v-bind:style="cssProps">
+        <custom-dropdown/>
         <div class="flip" v-if="flipCountdown > 0" @click="stopFlipping">
             <div class="flipping-vinyl">
                 <font-awesome-icon icon="compact-disc"/>
@@ -48,7 +49,7 @@
     import {mapState} from 'vuex'
     import lightOrDark from '../utils/lightOrDark'
     import AlbumTrack from './AlbumTrack'
-
+    import CustomDropdown from './Dropdown'
     Number.prototype.pad = function(size) {
         var s = String(this);
         while (s.length < (size || 2)) {s = "0" + s;}
@@ -58,7 +59,8 @@
     export default {
         name: "listening",
         components:{
-            AlbumTrack
+            AlbumTrack,
+            'custom-dropdown': CustomDropdown
         },
         data(){
             return {
