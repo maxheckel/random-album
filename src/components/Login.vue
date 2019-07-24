@@ -5,15 +5,8 @@
         <h3 v-show="forceSpinning">Looking up {{discogsUsername}}...</h3>
         <br>
         <div class="options">
-            <div @mouseover="isSpinning = true" @mouseleave="isSpinning = false" class="connect-discogs button">
-                <font-awesome-icon icon="compact-disc"/> Connect Discogs
-            </div>
-            <div class="or">
-                OR
-            </div>
-            <div class="discogs-username">
-                <input v-model="discogsUsername" v-on:keyup.enter="submitForm" placeholder="Discogs Username" type="text" name="discogs-username" v-on:keyup="isSpinning=false" v-on:keydown="isSpinning=true">
-            </div>
+            <input v-model="discogsUsername" v-on:keyup.enter="submitForm" placeholder="Discogs Username" type="text" name="discogs-username" v-on:keyup="isSpinning=false" v-on:keydown="isSpinning=true">
+
         </div>
 
     </div>
