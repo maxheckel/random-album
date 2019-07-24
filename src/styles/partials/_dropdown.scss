@@ -1,0 +1,44 @@
+.dropdown{
+  position: absolute;
+  top: 10px;
+  left: 20px;
+  .hamburger{
+    font-size: 30px;
+  }
+  .content{
+    position: absolute;
+    width: 230px;
+    background-color: rgba(255,255,255,0.8);
+    font-size: 22px;
+    -webkit-box-shadow: 2px 2px 11px 1px rgba(0,0,0,0.32);
+    -moz-box-shadow: 2px 2px 11px 1px rgba(0,0,0,0.32);
+    box-shadow: 2px 2px 11px 1px rgba(0,0,0,0.32);
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    text-align: center;
+
+    .item{
+      display: block;
+      padding: 15px;
+      border-bottom: 1px solid #ccc;
+      color: #000000;
+      text-decoration: none;
+      &.user-info{
+        font-size: 12px;
+        padding: 10px;
+        &:hover{
+          background-color: transparent;
+        }
+      }
+      &:hover{
+        background-color: #FFF;
+      }
+      &.last-item{
+        border-bottom: 0px;
+        border-bottom-left-radius: 5px;
+        border-bottom-right-radius: 5px;
+      }
+    }
+  }
+}

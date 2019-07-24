@@ -1,0 +1,97 @@
+.album-list{
+  text-align: center;
+  height: 100%;
+  transition: 0.4s;
+  background: linear-gradient(270deg, #45b79a, #2ce6b7, #297260, #4d9ace, #4dce6e, #bedd44, #ddcc44, #dd7b44);
+  background-size: 1600% 1600%;
+  top: 0px;
+  left: 0px;
+  position: absolute;
+  width: 100%;
+  background: linear-gradient(270deg, #45b79a, #2ce6b7, #297260, #4d9ace, #4dce6e, #bedd44, #ddcc44, #dd7b44);
+  background-size: 1600% 1600%;
+
+  -webkit-animation: AnimationName 51s ease infinite;
+  -moz-animation: AnimationName 51s ease infinite;
+  animation: AnimationName 51s ease infinite;
+
+  @-webkit-keyframes AnimationName {
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
+  }
+  @-moz-keyframes AnimationName {
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
+  }
+  @keyframes AnimationName {
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
+  }
+
+  input{
+    width: 80%;
+    text-align: center;
+    padding: 10px;
+    font-size: 24px !important;
+    position: absolute;
+    left: 10%;
+    top: 50%;
+    margin-top: -20px;
+    transition: 0.5s;
+    &.showing-albums{
+      top: 10px;
+      margin-top: 0px;
+    }
+  }
+  .fade-enter-active,
+  .fade-leave-active {
+    transition: opacity .5s;
+  }
+
+  .fade-enter,
+  .fade-leave-to {
+    opacity: 0;
+  }
+  .found-albums{
+    padding-top: 70px;
+    width: 80%;
+    margin-left: 10%;
+    height: calc(100% - 70px);
+    overflow: scroll;
+    ul{
+      margin: 0px;
+      padding: 0px;
+    }
+    .album{
+      display: grid;
+      width: 70%;
+      margin-left: 15%;
+      text-align: left;
+      grid-template-columns: 100px calc(100% - 100px);
+      grid-column-gap: 10px;
+      margin-bottom: 10px;
+      background-color: rgba(0,0,0,0.5);
+      color: #FFF;
+      padding: 10px;
+      img{
+        width: 100px;
+        height: auto;
+        display: inline-block;
+      }
+      .details{
+        display: inline-block;
+        vertical-align: middle;
+        .title{
+          font-size: 22px;
+        }
+        .artist{
+          font-size: 18px;
+          display: block;
+        }
+      }
+    }
+  }
+}

@@ -1,4 +1,11 @@
+html{
+  height: 100%;
+}
 body{
+  height: 100%;
+  #app{
+    height: 100%;
+  }
   h1, h2, h3, h4, h5{
     Font-Family: 'Raleway', Sans-Serif;
     font-weight: 100;
@@ -71,3 +78,5 @@ body{
 @import "partials/login";
 @import "partials/random-album";
 @import "partials/listen";
+@import "partials/dropdown";
+@import "partials/album-list";

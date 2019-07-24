@@ -1,6 +1,7 @@
 <template>
     <div v-bind:class="{'random-album': true, light: shouldBeLight}"
          v-if="selectedAlbum.basic_information !== undefined" v-bind:style="cssProps">
+        <custom-dropdown/>
         <img v-bind:src="selectedAlbum.basic_information.cover_image">
         <font-awesome-icon v-bind:class="{'spinner': true, 'visible': isSpinning}" :icon="['fal', 'compact-disc']"/>
         <h1>{{selectedAlbum.basic_information.title}}</h1>
@@ -20,6 +21,7 @@
     import vinylAPI from '../apis/randomvinyl'
     import {mapState} from 'vuex'
     import lightOrDark from '../utils/lightOrDark'
+    import CustomDropdown from './Dropdown'
 
     export default {
         name: "random-album",
@@ -36,6 +38,9 @@
                 tryInterval: null
             }
         },
+        components: {
+            'custom-dropdown': CustomDropdown
+            },
         computed:
             mapState({
                 cssProps: state => {

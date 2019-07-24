@@ -36,6 +36,11 @@
         components:{
             Logo
         },
+        mounted: function(){
+            if(localStorage.getItem('discogs-data') != null){
+                this.$router.push('/random-album')
+            }
+        },
         methods: {
             submitForm: async function(){
                 this.forceSpinning = true;
